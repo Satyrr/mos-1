@@ -19,14 +19,14 @@ def batchify(data, bsz, args):
     print(data.size())
     if args.cuda:
         data = data.cuda()
-    return data
+    return data # rest x batch_size
 
 def get_batch(source, i, args, seq_len=None, evaluation=False):
     seq_len = min(seq_len if seq_len else args.bptt, len(source) - 1 - i)
     data = Variable(source[i:i+seq_len], volatile=evaluation)
     # target = Variable(source[i+1:i+1+seq_len].view(-1))
     target = Variable(source[i+1:i+1+seq_len])
-    return data, target
+    return data, target # seq_len x batch_size
 
 def create_exp_dir(path, scripts_to_save=None):
     if not os.path.exists(path):
@@ -38,6 +38,7 @@ def create_exp_dir(path, scripts_to_save=None):
         for script in scripts_to_save:
             dst_file = os.path.join(path, 'scripts', os.path.basename(script))
             shutil.copyfile(script, dst_file)
+
 
 def save_checkpoint(model, optimizer, path, finetune=False):
     if finetune:
